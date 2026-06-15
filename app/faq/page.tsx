@@ -222,7 +222,7 @@ export default function FAQPage() {
   };
 
   const handleContactSupport = () => {
-    window.location.href = 'mailto:support@orbitchain.org';
+    window.location.href = 'mailto:support@milestonex.com';
   };
 
   const searchResultsCount = filteredFaqs.length;
@@ -235,7 +235,7 @@ export default function FAQPage() {
             Frequently Asked Questions
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Find answers to common questions about using OrbitChain. Can&apos;t find what you&apos;re
+            Find answers to common questions about using MilestoneX. Can&apos;t find what you&apos;re
             looking for? Contact our support team below.
           </p>
         </div>
