@@ -22,7 +22,7 @@ export const Success: Story = {
   args: {
     inputState: 'success',
     helperText: 'Looks good.',
-    defaultValue: 'donor@orbitchain.org',
+    defaultValue: 'donor@milestonex.com',
   },
 };
 
