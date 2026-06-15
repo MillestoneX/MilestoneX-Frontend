@@ -4,7 +4,7 @@ import DonationWidget from '@/components/donations/DonationWidget';
 
 export const metadata: Metadata = {
   title: "Home",
-  description: "OrbitChain — Empowering communities through technology",
+  description: "MilestoneX — Empowering communities through technology",
 };
 
 const HeroPage = () => {
@@ -21,7 +21,7 @@ const HeroPage = () => {
 
         {/* Sub-copy */}
         <p className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto mb-8 leading-relaxed">
-          OrbitChain uses blockchain transparency to prove every single project
+          MilestoneX uses blockchain transparency to prove every single project
           you fund, complete with verification and real-time impact tracking.
         </p>
 
