@@ -36,7 +36,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Read saved preference
     const saved =
-      (localStorage.getItem("orbitchain-theme") as Theme) ?? "system";
+      (localStorage.getItem("milestonex-theme") as Theme) ?? "system";
     setThemeState(saved);
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -58,7 +58,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const setTheme = useCallback(
     (t: Theme) => {
       setThemeState(t);
-      localStorage.setItem("orbitchain-theme", t);
+      localStorage.setItem("milestonex-theme", t);
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       const resolved =
         t === "system" ? (mediaQuery.matches ? "dark" : "light") : t;
