@@ -117,7 +117,7 @@ function getUpdates(project: Project, images: GalleryImage[]): Update[] {
       id: `${project.id}-launch`,
       campaignId: project.id,
       title: 'Campaign launched',
-      content: `${project.title} is now accepting donations from OrbitChain supporters.`,
+      content: `${project.title} is now accepting donations from MilestoneX supporters.`,
       imageUrls: images[0]?.src ? [images[0].src] : [],
       createdAt: project.createdAt,
     },
@@ -205,7 +205,7 @@ export function ProjectDetailsClient({ project, serverTime }: ProjectDetailsClie
   }
 
   const encodedUrl = encodeURIComponent(shareUrl);
-  const encodedText = encodeURIComponent(`Support ${projectState.title} on OrbitChain.`);
+  const encodedText = encodeURIComponent(`Support ${projectState.title} on MilestoneX.`);
   const socialLinks = {
     x: `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
