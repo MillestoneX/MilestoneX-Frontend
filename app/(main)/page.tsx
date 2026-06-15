@@ -15,12 +15,12 @@ export const metadata: Metadata = {
   title: "Home",
   description: "Discover and support verified aid projects worldwide. Join our transparent blockchain-based platform for charitable giving that makes a real difference.",
   openGraph: {
-    title: "Home | OrbitChain",
+    title: "Home | MilestoneX",
     description: "Discover and support verified aid projects worldwide. Join our transparent blockchain-based platform for charitable giving that makes a real difference.",
     url: "/",
   },
   twitter: {
-    title: "Home | OrbitChain",
+    title: "Home | MilestoneX",
     description: "Discover and support verified aid projects worldwide. Join our transparent blockchain-based platform for charitable giving that makes a real difference.",
   },
 };
