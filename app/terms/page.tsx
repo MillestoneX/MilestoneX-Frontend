@@ -4,15 +4,15 @@ import { LegalLayout } from '@/components/legal/LegalLayout';
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Read OrbitChain's terms of service. Understand the rules and guidelines for using our platform for transparent charitable donations.",
+  description: "Read MilestoneX's terms of service. Understand the rules and guidelines for using our platform for transparent charitable donations.",
   openGraph: {
-    title: "Terms of Service | OrbitChain",
-    description: "Read OrbitChain's terms of service. Understand the rules and guidelines for using our platform for transparent charitable donations.",
+    title: "Terms of Service | MilestoneX",
+    description: "Read MilestoneX's terms of service. Understand the rules and guidelines for using our platform for transparent charitable donations.",
     url: "/terms",
   },
   twitter: {
-    title: "Terms of Service | OrbitChain",
-    description: "Read OrbitChain's terms of service. Understand the rules and guidelines for using our platform for transparent charitable donations.",
+    title: "Terms of Service | MilestoneX",
+    description: "Read MilestoneX's terms of service. Understand the rules and guidelines for using our platform for transparent charitable donations.",
   },
 };
 
@@ -36,29 +36,29 @@ export default function TermsPage() {
       <section id="acceptance">
         <h2 className="text-2xl font-bold mb-4">1. Acceptance of Terms</h2>
         <p>
-          By accessing or using the OrbitChain platform, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
+          By accessing or using the MilestoneX platform, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
         </p>
       </section>
 
       <section id="description">
         <h2 className="text-2xl font-bold mb-4">2. Description of Service</h2>
         <p>
-          OrbitChain provides a decentralized platform that connects donors with charitable projects using the Stellar blockchain network. We facilitate the transfer of digital assets (such as USDC and XLM) from donors to project creators.
+          MilestoneX provides a decentralized platform that connects donors with charitable projects using the Stellar blockchain network. We facilitate the transfer of digital assets (such as USDC and XLM) from donors to project creators.
         </p>
       </section>
 
       <section id="eligibility">
         <h2 className="text-2xl font-bold mb-4">3. User Eligibility</h2>
         <p>
-          You must be at least 18 years of age to use this service. By using OrbitChain, you represent and warrant that you have the right, authority, and capacity to enter into this agreement.
+          You must be at least 18 years of age to use this service. By using MilestoneX, you represent and warrant that you have the right, authority, and capacity to enter into this agreement.
         </p>
       </section>
 
       <section id="donations">
         <h2 className="text-2xl font-bold mb-4">4. Donations and Fees</h2>
         <ul className="list-disc pl-6 space-y-2">
-          <li>All donations made through OrbitChain are final and non-refundable once settled on the blockchain.</li>
-          <li>OrbitChain may charge a platform fee for each donation to cover operational costs.</li>
+          <li>All donations made through MilestoneX are final and non-refundable once settled on the blockchain.</li>
+          <li>MilestoneX may charge a platform fee for each donation to cover operational costs.</li>
           <li>Users are responsible for any network fees (base reserve/gas) associated with their transactions on the Stellar network.</li>
         </ul>
       </section>
@@ -66,14 +66,14 @@ export default function TermsPage() {
       <section id="blockchain">
         <h2 className="text-2xl font-bold mb-4">5. Blockchain & Stellar Network</h2>
         <p>
-          OrbitChain operates on the Stellar network. We do not control the blockchain and cannot reverse transactions. You acknowledge that blockchain technology involves inherent risks, including but not limited to, price volatility and technical vulnerabilities.
+          MilestoneX operates on the Stellar network. We do not control the blockchain and cannot reverse transactions. You acknowledge that blockchain technology involves inherent risks, including but not limited to, price volatility and technical vulnerabilities.
         </p>
       </section>
 
       <section id="liability">
         <h2 className="text-2xl font-bold mb-4">6. Limitation of Liability</h2>
         <p>
-          In no event shall OrbitChain or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the platform.
+          In no event shall MilestoneX or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the platform.
         </p>
       </section>
 
