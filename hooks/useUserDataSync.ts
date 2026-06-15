@@ -6,9 +6,9 @@ import { userDataApi } from '@/lib/api/userData';
 import type { ProjectDraft } from '@/hooks/useDraftManager';
 import type { UserDataSnapshot, UserPreferences } from '@/types/userData';
 
-const BOOKMARKS_KEY = 'orbitchain-bookmarks';
+const BOOKMARKS_KEY = 'milestonex-bookmarks';
 const DRAFTS_KEY = 'project_drafts';
-const THEME_KEY = 'orbitchain-theme';
+const THEME_KEY = 'milestonex-theme';
 const ANALYTICS_KEY = 'analytics_consent';
 
 function parseStoredBookmarks(): string[] {
