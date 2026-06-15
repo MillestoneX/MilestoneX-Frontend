@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>🌍 OrbitChain</h1>
+  <h1>🌍 MilestoneX</h1>
   <p><strong>Blockchain-based crowdfunding platform on the Stellar Network</strong></p>
   <p>Transparent · Borderless · Secure</p>
 
@@ -16,7 +16,7 @@
 
 ## 📋 Overview
 
-**OrbitChain** is a full-featured, decentralized crowdfunding platform that leverages the **Stellar blockchain** to enable transparent, borderless fundraising. Project creators can raise funds in XLM, USDC, or any Stellar-based asset, while donors benefit from complete on-chain visibility — every contribution is verifiable on the Stellar ledger.
+**MilestoneX** is a full-featured, decentralized crowdfunding platform that leverages the **Stellar blockchain** to enable transparent, borderless fundraising. Project creators can raise funds in XLM, USDC, or any Stellar-based asset, while donors benefit from complete on-chain visibility — every contribution is verifiable on the Stellar ledger.
 
 The platform serves three primary audiences:
 
@@ -24,7 +24,7 @@ The platform serves three primary audiences:
 - **Creators** — Launch social impact projects, track donations in real time, and withdraw funds directly on-chain.
 - **Admins** — Oversee the ecosystem through campaign approval workflows, KYC management, and analytics dashboards.
 
-Built with **Next.js 14**, the Stellar ecosystem, and a modern TypeScript stack, OrbitChain provides a performant, responsive, and accessible user experience across devices.
+Built with **Next.js 14**, the Stellar ecosystem, and a modern TypeScript stack, MilestoneX provides a performant, responsive, and accessible user experience across devices.
 
 ---
 
@@ -74,7 +74,7 @@ Built with **Next.js 14**, the Stellar ecosystem, and a modern TypeScript stack,
 ## 🏗️ Architecture
 
 ```
-orbitchain-web/
+@milestonex/web/
 ├── app/                    # Next.js 14 App Router (pages, layouts, API routes)
 │   ├── (main)/            # Main application layout and pages
 │   ├── admin/             # Admin dashboard pages
@@ -137,8 +137,8 @@ orbitchain-web/
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/orbitchain-web.git
-cd orbitchain-web
+git clone https://github.com/your-username/@milestonex/web.git
+cd @milestonex/web
 
 # Install dependencies
 npm install
@@ -200,7 +200,7 @@ npm start
 
 ### Wallet Connection
 
-OrbitChain supports multiple Stellar wallets:
+MilestoneX supports multiple Stellar wallets:
 
 - **Freighter** — Browser extension wallet
 - **Albedo** — OAuth-based wallet integration
