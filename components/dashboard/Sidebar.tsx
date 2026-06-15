@@ -66,10 +66,10 @@ export function Sidebar({
           )}
         >
           <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
-            <span className="text-white font-bold text-sm leading-none">O</span>
+            <span className="text-white font-bold text-sm leading-none">M</span>
           </div>
           {!isCollapsed && (
-            <span className="text-white font-semibold text-base truncate">OrbitChain</span>
+            <span className="text-white font-semibold text-base truncate">MilestoneX</span>
           )}
           {/* Mobile close button */}
           <button
