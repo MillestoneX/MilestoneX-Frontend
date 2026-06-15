@@ -213,16 +213,16 @@ export default function ResetPasswordForm() {
       {/* Brand header */}
       <div className="flex items-center justify-center gap-2 mb-6">
         <div className="w-9 h-9 rounded-lg bg-[#1a3a6b] flex items-center justify-center shrink-0">
-          <span className="text-white font-bold text-base leading-none">O</span>
+          <span className="text-white font-bold text-base leading-none">M</span>
         </div>
-        <span className="text-lg font-semibold text-gray-900">OrbitChain</span>
+        <span className="text-lg font-semibold text-gray-900">MilestoneX</span>
       </div>
 
       {/* Heading */}
       <div className="text-center mb-5">
         <h1 className="text-2xl font-bold text-gray-900 mb-1">Reset Password</h1>
         <p className="text-sm text-gray-500">
-          Create a new password for your OrbitChain account.
+          Create a new password for your MilestoneX account.
         </p>
       </div>
 
