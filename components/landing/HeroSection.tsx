@@ -73,7 +73,7 @@ export function HeroSection() {
   return (
     <section
       className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#0a0e1a] via-[#0d1b3e] to-[#0a0e1a] px-4 py-20 md:py-28"
-      aria-label="OrbitChain hero"
+      aria-label="MilestoneX hero"
     >
       {/* Animated star canvas */}
       <canvas
@@ -107,7 +107,7 @@ export function HeroSection() {
         </h1>
 
         <p className="text-base sm:text-lg text-slate-300 max-w-xl mx-auto leading-relaxed">
-          OrbitChain connects verified campaign creators with donors worldwide — with full
+          MilestoneX connects verified campaign creators with donors worldwide — with full
           transparency, instant settlement, and zero intermediaries.
         </p>
 
