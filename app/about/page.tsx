@@ -36,7 +36,7 @@ const MOCK_PRESS = [
   {
     id: '1',
     source: 'TechForGood Magazine',
-    quote: 'OrbitChain is revolutionizing how we think about transparent charitable giving through blockchain technology.',
+    quote: 'MilestoneX is revolutionizing how we think about transparent charitable giving through blockchain technology.',
     date: 'March 2026'
   },
   {
@@ -80,7 +80,7 @@ export default function AboutPage() {
           <motion.div initial="hidden" animate="visible" variants={fadeIn}>
             <h1 className="text-4xl md:text-6xl font-bold mb-6">Transparent Giving, Global Impact</h1>
             <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
-              OrbitChain&apos;s mission is to eliminate the friction, opacity, and high costs of traditional charitable donations by leveraging the power of the Stellar network. We ensure that every cent you give goes directly where it&apos;s needed most.
+              MilestoneX&apos;s mission is to eliminate the friction, opacity, and high costs of traditional charitable donations by leveraging the power of the Stellar network. We ensure that every cent you give goes directly where it&apos;s needed most.
             </p>
           </motion.div>
         </div>
@@ -212,7 +212,7 @@ export default function AboutPage() {
           transition={{ duration: 0.5 }}
         >
           <ImpactStoryCard 
-            quote="When the floods hit, we needed funds for water purifiers immediately. Traditional grants take months. Through OrbitChain, we received USDC in seconds and bought supplies the same day."
+            quote="When the floods hit, we needed funds for water purifiers immediately. Traditional grants take months. Through MilestoneX, we received USDC in seconds and bought supplies the same day."
             author="Maria G., Local Coordinator"
             location="Relief Project 2025"
             imageUrl="https://images.unsplash.com/photo-1593113580327-024ceae8ebec?auto=format&fit=crop&q=80&w=1200"
