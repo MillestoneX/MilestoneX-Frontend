@@ -54,7 +54,7 @@ export function SubmissionSuccessModal({
     const url = projectId ? `${window.location.origin}/projects/${projectId}` : window.location.href;
     try {
       if (navigator.share) {
-        await navigator.share({ title: projectTitle ?? 'My OrbitChain Project', url });
+        await navigator.share({ title: projectTitle ?? 'My MilestoneX Project', url });
       } else {
         await navigator.clipboard.writeText(url);
         setCopied(true);
