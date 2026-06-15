@@ -4,15 +4,15 @@ import { LegalLayout } from '@/components/legal/LegalLayout';
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Learn how OrbitChain protects your privacy and handles your data. Our commitment to transparency extends to how we collect, use, and protect your information.",
+  description: "Learn how MilestoneX protects your privacy and handles your data. Our commitment to transparency extends to how we collect, use, and protect your information.",
   openGraph: {
-    title: "Privacy Policy | OrbitChain",
-    description: "Learn how OrbitChain protects your privacy and handles your data. Our commitment to transparency extends to how we collect, use, and protect your information.",
+    title: "Privacy Policy | MilestoneX",
+    description: "Learn how MilestoneX protects your privacy and handles your data. Our commitment to transparency extends to how we collect, use, and protect your information.",
     url: "/privacy",
   },
   twitter: {
-    title: "Privacy Policy | OrbitChain",
-    description: "Learn how OrbitChain protects your privacy and handles your data. Our commitment to transparency extends to how we collect, use, and protect your information.",
+    title: "Privacy Policy | MilestoneX",
+    description: "Learn how MilestoneX protects your privacy and handles your data. Our commitment to transparency extends to how we collect, use, and protect your information.",
   },
 };
 
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
       <section id="rights">
         <h2 className="text-2xl font-bold mb-4">6. Your Rights</h2>
         <p>
-          Depending on your location, you may have the right to access, correct, or delete your personal data. Contact us at privacy@orbitchain.org to exercise these rights.
+          Depending on your location, you may have the right to access, correct, or delete your personal data. Contact us at privacy@milestonex.com to exercise these rights.
         </p>
       </section>
     </LegalLayout>
