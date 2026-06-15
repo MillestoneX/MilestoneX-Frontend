@@ -21,7 +21,7 @@ export function ShareButtons({
   const [shares, setShares] = useState(shareCount);
   const [isLoading, setIsLoading] = useState(false);
 
-  const shareMessage = `Support "${campaignTitle}" on OrbitChain. Every contribution helps make a difference! 🌟`;
+  const shareMessage = `Support "${campaignTitle}" on MilestoneX. Every contribution helps make a difference! 🌟`;
 
   const handleShare = async (platform: 'twitter' | 'linkedin' | 'whatsapp' | 'copy') => {
     setIsLoading(true);
