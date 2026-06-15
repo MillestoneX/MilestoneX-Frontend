@@ -76,7 +76,7 @@ function EmptyState({ filtered }: { filtered: boolean }) {
       <p className="rd-empty__sub">
         {filtered
           ? 'Try adjusting the date range or project.'
-          : 'Be the first to support a project on OrbitChain.'}
+          : 'Be the first to support a project on MilestoneX.'}
       </p>
     </div>
   );
