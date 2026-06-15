@@ -203,7 +203,7 @@ export default function CreateProjectPage() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Create New Campaign</h1>
             <p className="text-gray-500 mt-1">
-              Get started with your social impact project on OrbitChain.
+              Get started with your social impact project on MilestoneX.
             </p>
           </div>
           <div className="flex items-center gap-3">
