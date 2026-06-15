@@ -69,10 +69,10 @@ export default function ConnectPage() {
           <span>Secure Stellar Cryptographic Login</span>
         </div>
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-          Connect to OrbitChain
+          Connect to MilestoneX
         </h1>
         <p className="text-base text-muted-foreground leading-relaxed max-w-lg mx-auto">
-          OrbitChain uses Stellar network wallets for secure, passwordless authentication and fast blockchain donations. Access your dashboard and projects in seconds.
+          MilestoneX uses Stellar network wallets for secure, passwordless authentication and fast blockchain donations. Access your dashboard and projects in seconds.
         </p>
       </div>
 
