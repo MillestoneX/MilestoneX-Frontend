@@ -65,11 +65,11 @@ export default function LoginForm() {
 
       // "Remember me" — flag session-only mode when unchecked
       if (!data.rememberMe) {
-        sessionStorage.setItem("orbitchain-session-only", "true");
+        sessionStorage.setItem("milestonex-session-only", "true");
       } else {
-        sessionStorage.removeItem("orbitchain-session-only");
+        sessionStorage.removeItem("milestonex-session-only");
         const expiry = Date.now() + 30 * 24 * 60 * 60 * 1000;
-        localStorage.setItem("orbitchain-session-expiry", String(expiry));
+        localStorage.setItem("milestonex-session-expiry", String(expiry));
       }
 
       redirect();
@@ -104,9 +104,9 @@ export default function LoginForm() {
       {/* Brand header — icon + name side by side */}
       <div className="flex items-center justify-center gap-2 mb-6">
         <div className="w-9 h-9 rounded-lg bg-[#1a3a6b] flex items-center justify-center shrink-0">
-          <span className="text-white font-bold text-base leading-none">O</span>
+          <span className="text-white font-bold text-base leading-none">M</span>
         </div>
-        <span className="text-lg font-semibold text-gray-900">OrbitChain</span>
+        <span className="text-lg font-semibold text-gray-900">MilestoneX</span>
       </div>
 
       {/* Heading */}
