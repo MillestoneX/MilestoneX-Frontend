@@ -101,7 +101,7 @@ export default function ForgotPasswordForm() {
           <h3 className="font-medium text-blue-900 mb-2">Next Steps:</h3>
           <ul className="text-sm text-blue-800 space-y-1">
             <li>• Check your email inbox</li>
-            <li>• Look for an email from OrbitChain</li>
+            <li>• Look for an email from MilestoneX</li>
             <li>• Click the reset link in the email</li>
             <li>• Create a new password</li>
           </ul>
@@ -135,9 +135,9 @@ export default function ForgotPasswordForm() {
       {/* Brand header */}
       <div className="flex items-center justify-center gap-2 mb-6">
         <div className="w-9 h-9 rounded-lg bg-[#1a3a6b] flex items-center justify-center shrink-0">
-          <span className="text-white font-bold text-base leading-none">O</span>
+          <span className="text-white font-bold text-base leading-none">M</span>
         </div>
-        <span className="text-lg font-semibold text-gray-900">OrbitChain</span>
+        <span className="text-lg font-semibold text-gray-900">MilestoneX</span>
       </div>
 
       {/* Heading */}
