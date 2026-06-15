@@ -5,7 +5,7 @@ import type { AuthStore } from '@/types';
 
 const setAuthCookie = (token: string) => {
   if (typeof window === 'undefined') return;
-  const sessionOnly = sessionStorage.getItem('orbitchain-session-only') === 'true';
+  const sessionOnly = sessionStorage.getItem('milestonex-session-only') === 'true';
   const days = sessionOnly ? undefined : 30;
   
   let expires = "";
