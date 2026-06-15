@@ -72,9 +72,9 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-base leading-none">O</span>
+              <span className="text-primary-foreground font-bold text-base leading-none">M</span>
             </div>
-            <span className="text-lg font-semibold text-foreground">OrbitChain</span>
+            <span className="text-lg font-semibold text-foreground">MilestoneX</span>
           </Link>
 
           {/* Desktop nav */}
