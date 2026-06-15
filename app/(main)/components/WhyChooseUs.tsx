@@ -31,7 +31,7 @@ const WhyChooseUs: React.FC = () => {
         {/* Header Section */}
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-extrabold text-[#0F172A] tracking-tight">
-            Why choose OrbitChain?
+            Why choose MilestoneX?
           </h2>
         </div>
 
