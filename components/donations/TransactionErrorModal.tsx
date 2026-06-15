@@ -97,7 +97,7 @@ const TYPE_COPY: Record<
   },
   network: {
     title: 'Network connection issue',
-    description: 'OrbitChain could not reach the donation service or Stellar network.',
+    description: 'MilestoneX could not reach the donation service or Stellar network.',
     icon: WifiOff,
     reasons: [
       'Your internet connection changed during submission.',
@@ -246,7 +246,7 @@ export function TransactionErrorModal({
     const subject = encodeURIComponent(`Donation failed: ${error.supportCode || 'no support code'}`);
     const body = encodeURIComponent(
       [
-        'Hi OrbitChain support,',
+        'Hi MilestoneX support,',
         '',
         'I need help with a failed donation transaction.',
         '',
@@ -259,7 +259,7 @@ export function TransactionErrorModal({
         .join('\n')
     );
 
-    return `mailto:support@orbitchain.org?subject=${subject}&body=${body}`;
+    return `mailto:support@milestonex.com?subject=${subject}&body=${body}`;
   }, [error]);
 
   useEffect(() => {
