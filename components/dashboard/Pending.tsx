@@ -204,7 +204,7 @@ function ErrorFallback({
         <p className="mt-6 text-sm text-gray-500 dark:text-gray-500">
           If this problem persists, please{" "}
           <a
-            href="mailto:support@orbitchain.org"
+            href="mailto:support@milestonex.com"
             className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
           >
             <Mail className="w-3 h-3" />
