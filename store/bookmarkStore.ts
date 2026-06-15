@@ -58,7 +58,7 @@ export const useBookmarkStore = create<BookmarkState>()(
       },
     }),
     {
-      name: 'orbitchain-bookmarks',
+      name: 'milestonex-bookmarks',
     }
   )
 );
