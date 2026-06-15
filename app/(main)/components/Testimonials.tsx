@@ -19,7 +19,7 @@ const TESTIMONIALS: Testimonial[] = [
     avatar: "AD",
     campaignName: "Clean Water for Dakar",
     quote:
-      "OrbitChain made it possible for our village to raise funds from donors worldwide. Every transaction was visible on-chain — donors trusted us because of that transparency.",
+      "MilestoneX made it possible for our village to raise funds from donors worldwide. Every transaction was visible on-chain — donors trusted us because of that transparency.",
     amountRaised: "12,400 XLM",
   },
   {
@@ -37,7 +37,7 @@ const TESTIMONIALS: Testimonial[] = [
     avatar: "CR",
     campaignName: "Earthquake Relief — Oaxaca",
     quote:
-      "In a crisis, speed matters. OrbitChain let us receive and deploy funds within hours, not weeks. The blockchain record meant zero questions about where the money went.",
+      "In a crisis, speed matters. MilestoneX let us receive and deploy funds within hours, not weeks. The blockchain record meant zero questions about where the money went.",
     amountRaised: "54,200 XLM",
   },
   {
@@ -46,7 +46,7 @@ const TESTIMONIALS: Testimonial[] = [
     avatar: "PN",
     campaignName: "Girls' Education Fund",
     quote:
-      "Our donors are spread across 18 countries. OrbitChain's multi-asset support meant everyone could contribute in their preferred currency. Truly borderless fundraising.",
+      "Our donors are spread across 18 countries. MilestoneX's multi-asset support meant everyone could contribute in their preferred currency. Truly borderless fundraising.",
     amountRaised: "19,600 XLM",
   },
   {
