@@ -38,7 +38,7 @@ export function StoryTab({ project }: StoryTabProps) {
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-lg font-bold text-neutral-900">{creator?.name || 'OrbitChain Creator'}</h3>
+              <h3 className="text-lg font-bold text-neutral-900">{creator?.name || 'MilestoneX Creator'}</h3>
               {(creator?.verified || project.isVerified) && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-success-50 px-2.5 py-1 text-xs font-bold text-success-700">
                   <ShieldCheck className="h-3.5 w-3.5" />
@@ -47,7 +47,7 @@ export function StoryTab({ project }: StoryTabProps) {
               )}
             </div>
             <p className="mt-2 text-sm leading-6 text-neutral-600">
-              {creator?.bio || 'This creator has submitted project documentation for OrbitChain review.'}
+              {creator?.bio || 'This creator has submitted project documentation for MilestoneX review.'}
             </p>
             <div className="mt-4 flex flex-wrap gap-3 text-sm text-neutral-500">
               {creator?.location || project.location ? (
