@@ -672,7 +672,7 @@ export default function CampaignReviewPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 flex-wrap">
           <div>
             <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-xs font-semibold text-indigo-600 uppercase tracking-widest">OrbitChain Admin</span>
+              <span className="text-xs font-semibold text-indigo-600 uppercase tracking-widest">MilestoneX Admin</span>
             </div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Campaign Reviews</h1>
           </div>
