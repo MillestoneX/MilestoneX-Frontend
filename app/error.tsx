@@ -246,7 +246,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
           <p className="mt-4">
             Need immediate help?{' '}
             <a
-              href="mailto:support@orbitchain.org"
+              href="mailto:support@milestonex.com"
               className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
             >
               <Mail className="w-3 h-3" />
