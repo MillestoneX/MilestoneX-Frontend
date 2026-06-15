@@ -16,7 +16,7 @@ interface CampaignSuccessDetailsProps {
 export function CampaignSuccessDetails({ campaign }: CampaignSuccessDetailsProps) {
   const [copiedField, setCopiedField] = useState<'url' | 'address' | null>(null);
 
-  const campaignUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://orbitchain.com'}/campaigns/${campaign.id}`;
+  const campaignUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://milestonex.com'}/campaigns/${campaign.id}`;
   const contractAddress = campaign.contract?.contractId || campaign.contract?.sorobanAddress;
   const networkType = campaign.contract?.network || 'testnet';
   
