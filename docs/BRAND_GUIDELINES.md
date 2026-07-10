@@ -26,11 +26,5 @@ All client storage keys are namespaced under the `milestonex-` prefix:
 | `milestonex-bookmarks` | Saved campaign bookmarks |
 | `milestonex-theme` | User theme preference |
 | `milestonex-session-expiry` | Auth session expiry timestamp |
-| `milestonex-session-only` | Cookie/session-only flag |
+| `milestonex-session-only` | Cookie / session-only flag |
 | `milestonex-receipt-*` | Donation receipts |
-
-## Migration note
-
-Users who upgrade from the previous (OrbitChain) client lose their
-localStorage bookmarks and theme. This is acceptable for a major rebrand —
-legacy keys can be migrated transparently in a future patch if needed.
