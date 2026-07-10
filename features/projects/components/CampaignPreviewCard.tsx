@@ -85,7 +85,7 @@ export const CampaignPreviewCard: React.FC<CampaignPreviewCardProps> = ({ formDa
       {/* Notes */}
       <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
         <p className="text-sm text-amber-900">
-          <strong>Note:</strong> Your campaign will start with 0 raised. Donors will see the progress bar increase as they contribute. Your campaign will be marked as "Verified" after admin approval.
+          <strong>Note:</strong> Your campaign will start with 0 raised. Donors will see the progress bar increase as they contribute. Your campaign will be marked as &quot;Verified&quot; after admin approval.
         </p>
       </div>
     </div>

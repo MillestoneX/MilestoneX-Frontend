@@ -192,7 +192,7 @@ export const CampaignDeployForm: React.FC<CampaignDeployFormProps> = ({
             <ul className="mt-2 space-y-1 list-disc list-inside">
               <li>Ensure you have sufficient balance for the network fee</li>
               <li>Check your wallet connection and try again</li>
-              <li>Make sure you're on the correct blockchain network</li>
+              <li>Make sure you&apos;re on the correct blockchain network</li>
               <li>Try a different wallet if available</li>
             </ul>
           </p>
@@ -396,7 +396,7 @@ export const CampaignDeployForm: React.FC<CampaignDeployFormProps> = ({
             </div>
           </div>
           <p className="text-xs text-gray-600 mt-3">
-            💡 Fees may vary slightly based on network conditions. You'll see
+            💡 Fees may vary slightly based on network conditions. You&apos;ll see
             the exact amount before signing.
           </p>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -225,10 +226,11 @@ function CampaignCard({
 
       {/* Cover */}
       <div className="relative h-40 overflow-hidden bg-slate-100">
-        <img
+        <Image
           src={campaign.coverImage}
           alt={campaign.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
         <div className="absolute bottom-2 right-2">
@@ -261,7 +263,7 @@ function CampaignCard({
 
         {/* Creator */}
         <div className="flex items-center gap-2 py-2 border-t border-slate-100">
-          <img src={campaign.creator.avatar} alt={campaign.creator.name} className="w-6 h-6 rounded-full object-cover" />
+          <Image src={campaign.creator.avatar} alt={campaign.creator.name} width={24} height={24} className="rounded-full object-cover" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium text-slate-700 truncate">{campaign.creator.name}</p>
             <p className="text-xs text-slate-400">{campaign.creator.totalCampaigns} campaigns</p>
@@ -349,8 +351,8 @@ function ReviewModal({
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Cover */}
-          <div className="rounded-xl overflow-hidden h-52">
-            <img src={campaign.coverImage} alt={campaign.title} className="w-full h-full object-cover" />
+          <div className="relative rounded-xl overflow-hidden h-52">
+            <Image src={campaign.coverImage} alt={campaign.title} fill className="object-cover" />
           </div>
 
           {/* Stats row */}
@@ -391,7 +393,7 @@ function ReviewModal({
           <div className="bg-slate-50 rounded-xl p-4">
             <h4 className="text-sm font-semibold text-slate-900 mb-3">Campaign Creator</h4>
             <div className="flex items-center gap-3">
-              <img src={campaign.creator.avatar} alt={campaign.creator.name} className="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow" />
+              <Image src={campaign.creator.avatar} alt={campaign.creator.name} width={48} height={48} className="rounded-full object-cover ring-2 ring-white shadow" />
               <div className="flex-1">
                 <p className="font-semibold text-slate-900">{campaign.creator.name}</p>
                 <p className="text-sm text-slate-500">{campaign.creator.email}</p>
