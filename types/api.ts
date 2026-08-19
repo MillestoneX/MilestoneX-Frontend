@@ -6,6 +6,13 @@ export interface ApiResponse<T> {
   status: number;
 }
 
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export interface ApiError {
   message: string;
   status?: number;
@@ -175,7 +182,8 @@ export interface SendDonationConfirmationEmailRequest {
 
 export interface Update {
   id: string;
-  campaignId: string;
+  campaignId?: string;
+  creatorId?: string;
   title: string;
   content: string;
   imageUrls?: string[];

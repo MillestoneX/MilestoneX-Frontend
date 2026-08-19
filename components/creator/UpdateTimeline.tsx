@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import { Bell, Pencil, Trash2, Plus } from 'lucide-react';
+import { Bell, Trash2, Plus } from 'lucide-react';
 import { useNotificationStore } from '@/store';
 import { updatesApi } from '@/lib/api/updates';
 import type { Update } from '@/types/api';
@@ -19,7 +19,6 @@ export function UpdateTimeline({ campaignId }: UpdateTimelineProps) {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const addNotification = useNotificationStore((state) => state.addNotification);
@@ -60,7 +59,6 @@ export function UpdateTimeline({ campaignId }: UpdateTimelineProps) {
     setContent('');
     setImageUrl('');
     setImageUrls([]);
-    setEditId(null);
     setError(null);
   };
 
@@ -76,15 +74,6 @@ export function UpdateTimeline({ campaignId }: UpdateTimelineProps) {
 
   const handleRemoveImage = (url: string) => {
     setImageUrls((current) => current.filter((item) => item !== url));
-  };
-
-  const handleEdit = (update: Update) => {
-    setEditId(update.id);
-    setTitle(update.title);
-    setContent(update.content);
-    setImageUrls(update.imageUrls ?? []);
-    setError(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (updateId: string) => {
@@ -111,32 +100,20 @@ export function UpdateTimeline({ campaignId }: UpdateTimelineProps) {
     setError(null);
 
     try {
-      if (editId) {
-        const response = await updatesApi.updateUpdate(campaignId, editId, {
-          title: title.trim(),
-          content: content.trim(),
-          imageUrls
-        });
+      const response = await updatesApi.postUpdate(campaignId, {
+        title: title.trim(),
+        content: content.trim(),
+        imageUrls
+      });
 
-        setUpdates((current) =>
-          current.map((item) => (item.id === editId ? response.data : item))
-        );
-      } else {
-        const response = await updatesApi.postUpdate(campaignId, {
-          title: title.trim(),
-          content: content.trim(),
-          imageUrls
-        });
-
-        setUpdates((current) => [response.data, ...current]);
-        addNotification({
-          type: 'campaign_update',
-          title: 'New campaign update',
-          message: `A new update was posted for campaign ${campaignId}: ${response.data.title}`,
-          read: false,
-          link: `/creator`
-        });
-      }
+      setUpdates((current) => [response.data, ...current]);
+      addNotification({
+        type: 'campaign_update',
+        title: 'New campaign update',
+        message: `A new update was posted for campaign ${campaignId}: ${response.data.title}`,
+        read: false,
+        link: `/creator`
+      });
 
       clearForm();
     } catch (submitError) {
@@ -232,17 +209,8 @@ export function UpdateTimeline({ campaignId }: UpdateTimelineProps) {
             disabled={isSubmitting}
             className="inline-flex items-center justify-center rounded-3xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {editId ? 'Save Update' : 'Post Update'}
+            Post Update
           </button>
-          {editId && (
-            <button
-              type="button"
-              onClick={clearForm}
-              className="rounded-3xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
-            >
-              Cancel edit
-            </button>
-          )}
         </div>
       </form>
 
@@ -274,14 +242,6 @@ export function UpdateTimeline({ campaignId }: UpdateTimelineProps) {
                       })}</p>
                     </div>
                     <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleEdit(update)}
-                        className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
-                      >
-                        <Pencil className="h-4 w-4" />
-                        Edit
-                      </button>
                       <button
                         type="button"
                         onClick={() => handleDelete(update.id)}
