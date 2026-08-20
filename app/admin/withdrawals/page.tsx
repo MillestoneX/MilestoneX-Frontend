@@ -1,23 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type Withdrawal = {
-  id: string;
-  amount: number;
-  currency: string;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "COMPLETED";
-  creatorId: string;
-  creatorName: string;
-  creatorEmail: string;
-  projectId: string;
-  projectName: string;
-  requestDate: string;
-  processedDate?: string;
-  transactionHash?: string;
-  rejectionReason?: string;
-  stellarAddress?: string;
-};
+import type { Withdrawal } from "@/types/api";
 
 const PAGE_SIZE = 10;
 
