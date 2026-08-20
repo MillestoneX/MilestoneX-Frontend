@@ -1,129 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
+import {
+  requireAdminSession,
+  approveFundRelease,
+} from '@/lib/api/admin';
 
-// Mock data - in a real app, this would come from a database
-let mockWithdrawals = [
-  {
-    id: '1',
-    amount: 1000,
-    currency: 'USD',
-    status: 'PENDING',
-    creatorId: 'creator1',
-    creatorName: 'Alice Creator',
-    creatorEmail: 'alice@example.com',
-    projectId: 'project1',
-    projectName: 'Community Garden Project',
-    requestDate: '2024-03-15T10:30:00Z',
-    stellarAddress: 'GD5XQZJZ5KQ4N5L5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q',
-  },
-  {
-    id: '2',
-    amount: 2500,
-    currency: 'USD',
-    status: 'APPROVED',
-    creatorId: 'creator2',
-    creatorName: 'Bob Builder',
-    creatorEmail: 'bob@example.com',
-    projectId: 'project2',
-    projectName: 'School Renovation',
-    requestDate: '2024-03-14T14:22:00Z',
-    processedDate: '2024-03-15T09:15:00Z',
-    stellarAddress: 'GD6YQZJZ5KQ4N5L5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q',
-  },
-  {
-    id: '3',
-    amount: 500,
-    currency: 'USD',
-    status: 'REJECTED',
-    creatorId: 'creator3',
-    creatorName: 'Charlie Artist',
-    creatorEmail: 'charlie@example.com',
-    projectId: 'project3',
-    projectName: 'Public Art Installation',
-    requestDate: '2024-03-13T16:45:00Z',
-    processedDate: '2024-03-14T11:30:00Z',
-    rejectionReason: 'Insufficient project documentation',
-    stellarAddress: 'GD7YQZJZ5KQ4N5L5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q',
-  },
-  {
-    id: '4',
-    amount: 3000,
-    currency: 'USD',
-    status: 'COMPLETED',
-    creatorId: 'creator4',
-    creatorName: 'Diana Developer',
-    creatorEmail: 'diana@example.com',
-    projectId: 'project4',
-    projectName: 'Tech Education Platform',
-    requestDate: '2024-03-12T09:15:00Z',
-    processedDate: '2024-03-13T14:22:00Z',
-    transactionHash: '1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-    stellarAddress: 'GD8YQZJZ5KQ4N5L5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q',
-  },
-  {
-    id: '5',
-    amount: 1500,
-    currency: 'USD',
-    status: 'PENDING',
-    creatorId: 'creator5',
-    creatorName: 'Eve Entrepreneur',
-    creatorEmail: 'eve@example.com',
-    projectId: 'project5',
-    projectName: 'Startup Incubator',
-    requestDate: '2024-03-11T11:30:00Z',
-    stellarAddress: 'GD9YQZJZ5KQ4N5L5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q',
-  },
-];
-
+/**
+ * PUT /api/admin/withdrawals/:id/approve
+ *
+ * Approves a pending fund-release via the backend.
+ * Returns 401 without a valid admin session.
+ */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
-    const withdrawalIndex = mockWithdrawals.findIndex(w => w.id === params.id);
-    
-    if (withdrawalIndex === -1) {
+    const backendToken = await requireAdminSession();
+    if (!backendToken) {
       return NextResponse.json(
-        { error: 'Withdrawal not found' },
-        { status: 404 }
+        { error: 'Unauthorized – admin access required' },
+        { status: 401 },
       );
     }
-    
-    const withdrawal = mockWithdrawals[withdrawalIndex];
-    if (!withdrawal) {
-      return NextResponse.json(
-        { error: 'Withdrawal not found' },
-        { status: 404 }
-      );
-    }
-    
-    if (withdrawal.status !== 'PENDING') {
-      return NextResponse.json(
-        { error: 'Only pending withdrawals can be approved' },
-        { status: 400 }
-      );
-    }
-    
-    // Update withdrawal status to approved
-    mockWithdrawals[withdrawalIndex] = {
-      ...withdrawal,
-      status: 'APPROVED' as const,
-      processedDate: new Date().toISOString(),
-    };
-    
-    // In a real app, you would:
-    // 1. Send notification to creator
-    // 2. Log the approval action
-    // 3. Update database transaction
-    
+
+    const withdrawal = await approveFundRelease(backendToken, params.id);
+
     return NextResponse.json({
       message: 'Withdrawal approved successfully',
-      withdrawal: mockWithdrawals[withdrawalIndex]
+      withdrawal,
     });
   } catch (error) {
     console.error('Error approving withdrawal:', error);
-    return NextResponse.json(
-      { error: 'Failed to approve withdrawal' },
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error ? error.message : 'Failed to approve withdrawal';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
