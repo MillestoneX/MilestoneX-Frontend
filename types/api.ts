@@ -218,3 +218,42 @@ export interface CreateUpdateRequest {
   content: string;
   imageUrls?: string[];
 }
+
+// Fund Release / Withdrawal Types
+export type FundReleaseStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED';
+
+/** Backend fund-release payload from MilestoneX-Backend */
+export interface FundRelease {
+  id: string;
+  milestoneId: string;
+  campaignId: string;
+  amount: string;
+  status: FundReleaseStatus;
+  releaseReason?: string;
+  txHash?: string;
+  creatorId?: string;
+  creatorName?: string;
+  creatorEmail?: string;
+  campaignTitle?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Frontend withdrawal record mapped from the backend FundRelease shape */
+export interface Withdrawal {
+  id: string;
+  amount: number;
+  currency: string;
+  status: FundReleaseStatus;
+  creatorId: string;
+  creatorName: string;
+  creatorEmail: string;
+  projectId: string;
+  projectName: string;
+  requestDate: string;
+  processedDate?: string;
+  transactionHash?: string;
+  rejectionReason?: string;
+  stellarAddress?: string;
+  milestoneId: string;
+}
