@@ -2,17 +2,18 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import { useAuthStore } from "@/store/authStore";
-import { authApi } from "@/lib/api/auth";
 
 // Session timeout configuration
-const WARNING_THRESHOLD = 5 * 60 * 1000; // 5 minutes in milliseconds
+const WARNING_THRESHOLD = 5 * 60 * 1000; // 5 minutes before expiry
 const CHECK_INTERVAL = 30 * 1000; // Check every 30 seconds
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
 export interface SessionTimeoutOptions {
   onWarning?: (timeRemaining: number) => void;
   onExpired?: () => void;
-  onRefreshSuccess?: () => void;
-  onRefreshFailure?: (error: unknown) => void;
   warningThreshold?: number;
   checkInterval?: number;
 }
@@ -20,20 +21,19 @@ export interface SessionTimeoutOptions {
 export interface SessionTimeoutState {
   isWarning: boolean;
   timeRemaining: number;
-  isRefreshing: boolean;
 }
 
-// JWT token utilities
+// ---------------------------------------------------------------------------
+// JWT utilities
+// ---------------------------------------------------------------------------
+
 const getTokenExpirationTime = (token: string): number | null => {
   try {
     const payloadSegment = token.split(".")[1];
-    if (!payloadSegment) {
-      return null;
-    }
+    if (!payloadSegment) return null;
     const payload = JSON.parse(atob(payloadSegment));
-    return payload.exp * 1000; // Convert to milliseconds
-  } catch (error) {
-    console.error("Invalid token format:", error);
+    return payload.exp * 1000; // → milliseconds
+  } catch {
     return null;
   }
 };
@@ -41,34 +41,38 @@ const getTokenExpirationTime = (token: string): number | null => {
 const isTokenExpired = (token: string): boolean => {
   const expirationTime = getTokenExpirationTime(token);
   if (!expirationTime) return true;
-  
   return Date.now() >= expirationTime;
 };
 
 const getTimeRemaining = (token: string): number => {
   const expirationTime = getTokenExpirationTime(token);
   if (!expirationTime) return 0;
-  
   return Math.max(0, expirationTime - Date.now());
 };
 
-// Session timeout hook
+// ---------------------------------------------------------------------------
+// Hook
+// ---------------------------------------------------------------------------
+
+/**
+ * Monitors the stored JWT and fires callbacks when it is about to expire or
+ * has already expired.  Because the backend only issues a short-lived
+ * accessToken (≈15 min) with no refresh token, expiry means the user must
+ * re-authenticate via wallet challenge-response.
+ */
 export function useSessionTimeout(options: SessionTimeoutOptions = {}) {
   const {
     onWarning,
     onExpired,
-    onRefreshSuccess,
-    onRefreshFailure,
     warningThreshold = WARNING_THRESHOLD,
     checkInterval = CHECK_INTERVAL,
   } = options;
 
-  const { token, refreshToken: storedRefreshToken, login, logout } = useAuthStore();
+  const { token, logout } = useAuthStore();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const warningTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const isRefreshingRef = useRef(false);
 
-  // Clear all timeouts and intervals
+  // Clear all timers
   const cleanup = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -80,136 +84,78 @@ export function useSessionTimeout(options: SessionTimeoutOptions = {}) {
     }
   }, []);
 
-  // Handle session expiration
-  const handleExpiration = useCallback(async () => {
+  // Called when the token has expired or is about to expire
+  const handleExpiration = useCallback(() => {
     cleanup();
-    
-    // Try to refresh the token first
-    if (!isRefreshingRef.current && storedRefreshToken) {
-      isRefreshingRef.current = true;
-      
-      try {
-        const response = await authApi.refreshToken();
-        
-        if (response.status === 200 && response.data) {
-          // Update auth store with new token
-          login(response.data.user, response.data.token, response.data.refreshToken);
-          onRefreshSuccess?.();
-          return; // Don't logout if refresh succeeded
-        }
-      } catch (error) {
-        console.error("Token refresh failed:", error);
-        onRefreshFailure?.(error);
-      } finally {
-        isRefreshingRef.current = false;
-      }
-    }
-    
-    // If refresh failed or wasn't attempted, logout
     logout();
     onExpired?.();
-  }, [cleanup, storedRefreshToken, login, logout, onExpired, onRefreshSuccess, onRefreshFailure]);
+  }, [cleanup, logout, onExpired]);
 
-  // Manual refresh token function
-  const refreshToken = useCallback(async (): Promise<boolean> => {
-    if (!token || !storedRefreshToken || isRefreshingRef.current) return false;
-    
-    isRefreshingRef.current = true;
-    
-    try {
-      const response = await authApi.refreshToken();
-      
-      if (response.status === 200 && response.data) {
-        login(response.data.user, response.data.token, response.data.refreshToken);
-        onRefreshSuccess?.();
-        return true;
-      }
-    } catch (error) {
-      console.error("Manual token refresh failed:", error);
-      onRefreshFailure?.(error);
-    } finally {
-      isRefreshingRef.current = false;
-    }
-    
-    return false;
-  }, [token, storedRefreshToken, login, onRefreshSuccess, onRefreshFailure]);
-
-  // Start monitoring session
+  // Start periodic token monitoring
   const startMonitoring = useCallback(() => {
     if (!token) return;
-    
     cleanup();
-    
-    // Check token immediately
+
+    // Token already expired
     if (isTokenExpired(token)) {
       handleExpiration();
       return;
     }
-    
-    // Set up periodic checks
+
     intervalRef.current = setInterval(() => {
       if (!token) {
         cleanup();
         return;
       }
-      
-      const timeRemaining = getTimeRemaining(token);
-      
-      if (timeRemaining === 0) {
+
+      const remaining = getTimeRemaining(token);
+
+      if (remaining === 0) {
         handleExpiration();
         return;
       }
-      
-      // Show warning when approaching expiration
-      if (timeRemaining <= warningThreshold && !warningTimeoutRef.current) {
-        onWarning?.(timeRemaining);
-        
-        // Set timeout for actual expiration
+
+      // Warn once when approaching expiry
+      if (remaining <= warningThreshold && !warningTimeoutRef.current) {
+        onWarning?.(remaining);
+
+        // When the exact expiry hits, trigger expiration
         warningTimeoutRef.current = setTimeout(() => {
           handleExpiration();
-        }, timeRemaining);
+        }, remaining);
       }
     }, checkInterval);
   }, [token, cleanup, handleExpiration, onWarning, warningThreshold, checkInterval]);
 
-  // Effect to manage session monitoring
+  // Kick off monitoring whenever the token changes
   useEffect(() => {
     if (token) {
       startMonitoring();
     } else {
       cleanup();
     }
-    
     return cleanup;
   }, [token, startMonitoring, cleanup]);
 
-  // Get current session state
+  // Imperatively read the current session state
   const getSessionState = useCallback((): SessionTimeoutState => {
     if (!token) {
-      return {
-        isWarning: false,
-        timeRemaining: 0,
-        isRefreshing: isRefreshingRef.current,
-      };
+      return { isWarning: false, timeRemaining: 0 };
     }
-    
-    const timeRemaining = getTimeRemaining(token);
-    
+    const remaining = getTimeRemaining(token);
     return {
-      isWarning: timeRemaining > 0 && timeRemaining <= warningThreshold,
-      timeRemaining,
-      isRefreshing: isRefreshingRef.current,
+      isWarning: remaining > 0 && remaining <= warningThreshold,
+      timeRemaining: remaining,
     };
   }, [token, warningThreshold]);
 
-  return {
-    refreshToken,
-    getSessionState,
-    cleanup,
-  };
+  return { getSessionState, cleanup };
 }
 
-// Utility functions for external use
+// ---------------------------------------------------------------------------
+// Public utilities
+// ---------------------------------------------------------------------------
+
 export const sessionUtils = {
   getTokenExpirationTime,
   isTokenExpired,
@@ -218,7 +164,6 @@ export const sessionUtils = {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   },
 };

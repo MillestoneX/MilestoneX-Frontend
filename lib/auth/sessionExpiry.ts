@@ -1,29 +1,37 @@
-import { InternalAxiosRequestConfig } from 'axios';
+/**
+ * Session expiry signalling.
+ *
+ * When the API response interceptor receives a 401 it calls
+ * {@link emitSessionExpired}.  Any component (e.g. SessionExpiredModal) can
+ * subscribe via {@link onSessionExpired} to show the wallet re-auth flow.
+ */
 
-type RequestCallback = (token: string) => void;
-type FailCallback = () => void;
+import { InternalAxiosRequestConfig } from "axios";
 
-interface PendingRequest {
-  resolve: RequestCallback;
-  reject: FailCallback;
+// ---------------------------------------------------------------------------
+// Listener (single subscriber – the SessionExpiredModal)
+// ---------------------------------------------------------------------------
+
+type SessionExpiredListener = (config: InternalAxiosRequestConfig) => void;
+
+let sessionExpiredListener: SessionExpiredListener | null = null;
+
+/** Register the component that should open when the session expires. */
+export function onSessionExpired(listener: SessionExpiredListener) {
+  sessionExpiredListener = listener;
 }
+
+/** Called by the response interceptor on 401. */
+export function emitSessionExpired(config: InternalAxiosRequestConfig) {
+  sessionExpiredListener?.(config);
+}
+
+// ---------------------------------------------------------------------------
+// Refreshing guard — prevents multiple 401 handlers from stacking up
+// (used by the interceptor while the re-auth modal is opening)
+// ---------------------------------------------------------------------------
 
 let isRefreshing = false;
-let pendingRequests: PendingRequest[] = [];
-
-export function addPendingRequest(resolve: RequestCallback, reject: FailCallback) {
-  pendingRequests.push({ resolve, reject });
-}
-
-export function resolvePendingRequests(token: string) {
-  pendingRequests.forEach((req) => req.resolve(token));
-  pendingRequests = [];
-}
-
-export function rejectPendingRequests() {
-  pendingRequests.forEach((req) => req.reject());
-  pendingRequests = [];
-}
 
 export function getIsRefreshing() {
   return isRefreshing;
@@ -31,16 +39,4 @@ export function getIsRefreshing() {
 
 export function setIsRefreshing(value: boolean) {
   isRefreshing = value;
-}
-
-type SessionExpiredListener = (config: InternalAxiosRequestConfig) => void;
-
-let sessionExpiredListener: SessionExpiredListener | null = null;
-
-export function onSessionExpired(listener: SessionExpiredListener) {
-  sessionExpiredListener = listener;
-}
-
-export function emitSessionExpired(config: InternalAxiosRequestConfig) {
-  sessionExpiredListener?.(config);
 }

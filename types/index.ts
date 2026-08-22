@@ -1,31 +1,30 @@
-// User Types
-export type UserRole = "admin" | "user" | "moderator" | "creator";
+// User Types (wallet-based — matches backend)
+export type UserRole = "admin" | "user" | "moderator" | "creator" | "donor";
 
 export interface User {
   id: string;
-  email: string;
-  name: string;
-  avatar?: string;
+  walletAddress: string;
+  displayName: string;
   role?: UserRole;
-  googleLinked?: boolean;
-  githubLinked?: boolean;
+  email?: string;
+  avatar?: string;
 }
 
 // Auth Store Types
 export interface AuthState {
   user: User | null;
   token: string | null;
-  refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
 
 export interface AuthActions {
-  login: (user: User, token: string, refreshToken?: string) => void;
+  /** Store auth after a successful wallet challenge-response */
+  login: (user: User, token: string) => void;
   logout: () => void;
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
-  setTokens: (token: string, refreshToken: string) => void;
+  setToken: (token: string) => void;
 }
 
 export type AuthStore = AuthState & AuthActions;

@@ -1,17 +1,17 @@
-import { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { apiClient } from './client';
-import { useAuthStore } from '@/store/authStore';
-import { useUIStore } from '@/store/uiStore';
+import { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import { apiClient } from "./client";
+import { useAuthStore } from "@/store/authStore";
+import { useUIStore } from "@/store/uiStore";
 import {
-  addPendingRequest,
-  resolvePendingRequests,
-  rejectPendingRequests,
   getIsRefreshing,
   setIsRefreshing,
   emitSessionExpired,
-} from '@/lib/auth/sessionExpiry';
+} from "@/lib/auth/sessionExpiry";
 
-// Request Interceptor: Attach Auth Token
+// ---------------------------------------------------------------------------
+// Request interceptor — attach the wallet accessToken
+// ---------------------------------------------------------------------------
+
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = useAuthStore.getState().token;
@@ -21,8 +21,11 @@ apiClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[API Request] ${config.method?.toUpperCase()} ${config.url}`, config.data || '');
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `[API Request] ${config.method?.toUpperCase()} ${config.url}`,
+        config.data || "",
+      );
     }
 
     return config;
@@ -30,70 +33,63 @@ apiClient.interceptors.request.use(
   (error: AxiosError) => {
     useUIStore.getState().setGlobalLoading(false);
     return Promise.reject(error);
-  }
+  },
 );
 
-// Response Interceptor: Handle Errors and Token Refresh
+// ---------------------------------------------------------------------------
+// Response interceptor — handle errors & 401 session expiry
+// ---------------------------------------------------------------------------
+
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     useUIStore.getState().setGlobalLoading(false);
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[API Response] ${response.status} ${response.config.url}`, response.data);
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `[API Response] ${response.status} ${response.config.url}`,
+        response.data,
+      );
     }
     return response;
   },
   async (error: AxiosError<{ message?: string }>) => {
     useUIStore.getState().setGlobalLoading(false);
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-    if (process.env.NODE_ENV === 'development') {
-      console.error(`[API Error] ${error.response?.status} ${error.config?.url}`, error.response?.data || error.message);
+    if (process.env.NODE_ENV === "development") {
+      console.error(
+        `[API Error] ${error.response?.status} ${error.config?.url}`,
+        error.response?.data || error.message,
+      );
     }
 
-    // Handle 401 Unauthorized – queue request and prompt re-authentication
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      if (getIsRefreshing()) {
-        // Another 401 is already being handled – queue this request
-        return new Promise<string>((resolve, reject) => {
-          addPendingRequest(resolve, reject);
-        }).then((token) => {
-          if (originalRequest.headers) {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-          }
-          return apiClient(originalRequest);
-        }).catch(() => Promise.reject(error));
-      }
-
+    // ── 401 Unauthorized → signal session expiry ────────────────────────
+    if (error.response?.status === 401 && !getIsRefreshing()) {
       setIsRefreshing(true);
 
-      return new Promise<string>((resolve, reject) => {
-        addPendingRequest(resolve, reject);
-        // Signal the SessionExpiredModal to open
-        emitSessionExpired(originalRequest);
-      }).then((token) => {
-        setIsRefreshing(false);
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-        }
-        return apiClient(originalRequest);
-      }).catch(() => {
-        setIsRefreshing(false);
-        rejectPendingRequests();
-        return Promise.reject(error);
-      });
+      // Emit so the SessionExpiredModal (or any subscriber) can open the
+      // wallet re-authentication flow.  The interceptor does NOT attempt a
+      // refresh-token call because the backend does not support one.
+      emitSessionExpired(
+        error.config as InternalAxiosRequestConfig,
+      );
+
+      // After emitting, clear the guard so subsequent 401s can re-trigger.
+      // The guard is reset after a short delay to avoid flicker while the
+      // re-auth modal is animating open.
+      setTimeout(() => setIsRefreshing(false), 500);
     }
 
-    // Standardize error handling
+    // ── Standardised error shape ────────────────────────────────────────
     const apiError = {
-      message: error.response?.data?.message || error.message || 'An unexpected error occurred',
+      message:
+        error.response?.data?.message ||
+        error.message ||
+        "An unexpected error occurred",
       status: error.response?.status,
       data: error.response?.data,
     };
 
     return Promise.reject(apiError);
-  }
+  },
 );
 
 export { apiClient };

@@ -7,8 +7,8 @@ import { useSessionTimeout, sessionUtils } from "@/lib/auth/sessionTimeout";
 import { useAuthStore } from "@/store/authStore";
 
 export function SessionTimeoutDemo() {
-  const { token, refreshToken, login } = useAuthStore();
-  const { getSessionState, refreshToken: refreshSession } = useSessionTimeout();
+  const { token, login } = useAuthStore();
+  const { getSessionState } = useSessionTimeout();
   const [demoToken, setDemoToken] = useState("");
 
   const sessionState = getSessionState();
@@ -33,9 +33,8 @@ export function SessionTimeoutDemo() {
     
     // Simulate login with test token
     login(
-      { id: "test-user", email: "test@example.com", name: "Test User" },
+      { id: "test-user", walletAddress: "GTEST1234567890ABCDEF", displayName: "Test User" },
       testToken,
-      "test-refresh-token"
     );
   };
 
@@ -57,9 +56,8 @@ export function SessionTimeoutDemo() {
     const testToken = `${encodedHeader}.${encodedPayload}.${signature}`;
     
     login(
-      { id: "test-user", email: "test@example.com", name: "Test User" },
+      { id: "test-user", walletAddress: "GTEST1234567890ABCDEF", displayName: "Test User" },
       testToken,
-      "test-refresh-token"
     );
   };
 
@@ -83,10 +81,8 @@ export function SessionTimeoutDemo() {
           <h3 className="font-semibold mb-2">Current Session Status:</h3>
           <div className="space-y-1 text-sm">
             <p><strong>Token:</strong> {token ? "Present" : "None"}</p>
-            <p><strong>Refresh Token:</strong> {refreshToken ? "Present" : "None"}</p>
             <p><strong>Is Warning:</strong> {sessionState.isWarning ? "Yes" : "No"}</p>
             <p><strong>Time Remaining:</strong> {formatTime(sessionState.timeRemaining)}</p>
-            <p><strong>Is Refreshing:</strong> {sessionState.isRefreshing ? "Yes" : "No"}</p>
           </div>
         </div>
 
@@ -110,11 +106,10 @@ export function SessionTimeoutDemo() {
             </Button>
             
             <Button
-              onClick={() => refreshSession()}
               disabled={!token}
               variant="outline"
             >
-              Manual Refresh Token
+              Manual Refresh (N/A — wallet re-auth)
             </Button>
             
             <Button

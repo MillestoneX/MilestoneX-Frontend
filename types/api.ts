@@ -1,4 +1,4 @@
-import { StellarNetworkType, User } from './index';
+import { StellarNetworkType } from './index';
 
 export interface ApiResponse<T> {
   data: T;
@@ -19,36 +19,43 @@ export interface ApiError {
   data?: unknown;
 }
 
-// Auth Types
-export interface LoginCredentials {
-  email: string;
-  password: string;
-  rememberMe?: boolean;
+// Auth Types — wallet challenge-response (matches MilestoneX-Backend)
+
+/** GET /auth/challenge response */
+export interface AuthChallenge {
+  challenge: string;
+  account: string;
+  networkPassphrase: string;
 }
 
-export interface LoginResponse {
-  user: User;
-  token: string;
-  refreshToken?: string;
+/** POST /auth/verify request body */
+export interface AuthVerifyRequest {
+  walletAddress: string;
+  signedChallenge: string;
+  challenge: string;
 }
 
-export interface RegisterRequest {
-  email: string;
-  role: 'donor' | 'creator';
-  password?: string;
-  confirmPassword?: string;
+/** POST /auth/verify response (and re-verified responses) */
+export interface AuthVerifyResponse {
+  accessToken: string;
+  tokenType: string;
 }
 
-export interface VerifyEmailRequest {
-  token: string;
+/** POST /auth/logout response */
+export interface AuthLogoutResponse {
+  message: string;
 }
 
-export interface ResendEmailRequest {
-  email: string;
-}
-
-export interface ChangeEmailRequest {
-  email: string;
+/** GET /users/me response — wallet-based user profile */
+export interface UserProfile {
+  id: string;
+  walletAddress: string;
+  displayName: string;
+  role: 'donor' | 'creator' | 'admin' | 'moderator';
+  email?: string;
+  avatar?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // Project Types

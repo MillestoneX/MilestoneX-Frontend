@@ -123,20 +123,20 @@ export default function ProfileDropdown() {
           {user?.avatar ? (
             <Image
               src={user.avatar}
-              alt={user.name || "User Avatar"}
+              alt={user.displayName || "User Avatar"}
               width={32}
               height={32}
               className="w-full h-full rounded-full object-cover"
               unoptimized
             />
           ) : (
-            <span>{user?.name ? getUserInitials(user.name) : 'U'}</span>
+            <span>{user?.displayName ? getUserInitials(user.displayName) : 'U'}</span>
           )}
         </div>
 
         {/* User Name */}
         <span className="hidden sm:block text-sm font-medium text-foreground">
-          {user?.name || 'User'}
+          {user?.displayName || 'User'}
         </span>
 
         {/* Chevron Icon */}
@@ -157,8 +157,12 @@ export default function ProfileDropdown() {
       >
         {/* User Info Header */}
         <div className="px-4 py-3 border-b border-border">
-          <p className="text-sm font-medium text-foreground">{user?.name || 'User'}</p>
-          <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+          <p className="text-sm font-medium text-foreground">{user?.displayName || 'User'}</p>
+          <p className="text-xs text-muted-foreground truncate" title={user?.walletAddress || ''}>
+            {user?.walletAddress
+              ? `${user.walletAddress.slice(0, 6)}…${user.walletAddress.slice(-4)}`
+              : user?.email || ''}
+          </p>
         </div>
 
         {/* Menu Items */}

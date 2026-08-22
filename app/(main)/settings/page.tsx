@@ -28,21 +28,8 @@ function SettingsPage() {
   };
 
   const handleDisconnect = async (provider: string) => {
-    setLoading(provider);
-    try {
-      await authApi.disconnectSocialAccount(provider);
-      if (user) {
-        const updatedUser = { ...user };
-        if (provider === "google") updatedUser.googleLinked = false;
-        if (provider === "github") updatedUser.githubLinked = false;
-        setUser(updatedUser);
-      }
-      toast.success(`${provider} account disconnected.`);
-    } catch (error) {
-      toast.error(`Failed to disconnect ${provider} account.`);
-    } finally {
-      setLoading(null);
-    }
+    // Social account disconnect is not supported by the wallet-based backend.
+    toast.info("Social account management is coming soon.");
   };
 
   return (
@@ -66,12 +53,12 @@ function SettingsPage() {
                 <div>
                   <h3 className="font-medium text-gray-900">Google</h3>
                   <p className="text-xs text-gray-400">
-                    {user?.googleLinked ? "Account linked" : "Not linked"}
+                    Coming soon
                   </p>
                 </div>
               </div>
               <div>
-                {user?.googleLinked ? (
+                {false ? (
                   <Button
                     variant="outline"
                     size="sm"
@@ -104,12 +91,12 @@ function SettingsPage() {
                 <div>
                   <h3 className="font-medium text-gray-900">GitHub</h3>
                   <p className="text-xs text-gray-400">
-                    {user?.githubLinked ? "Account linked" : "Not linked"}
+                    Coming soon
                   </p>
                 </div>
               </div>
               <div>
-                {user?.githubLinked ? (
+                {false ? (
                   <Button
                     variant="outline"
                     size="sm"

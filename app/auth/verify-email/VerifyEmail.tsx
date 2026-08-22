@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button, Input, useToast, Card, Spinner } from "@/components/ui";
-import { authApi } from "@/lib/api/auth";
+// Note: email verification is not supported by the wallet-based backend.
+// This page is kept as a placeholder until social login is added.
 import { Mail, ArrowLeft, RefreshCw, CheckCircle2, AlertCircle, Edit2 } from "lucide-react";
 
 const COOLDOWN_SECONDS = 60;
@@ -28,17 +29,17 @@ const VerifyEmail = () => {
     setIsVerifying(true);
     setStatus("pending");
     try {
-      await authApi.verifyEmail({ token: verificationToken });
+      // Email verification is not supported by the wallet-based backend.
+      // Redirect to login so the user can sign in with their wallet.
       setStatus("success");
-      toast.success("Email verified successfully! You can now log in.");
-      // Redirect to login after 3 seconds
+      toast.success("Please sign in with your Stellar wallet.");
       setTimeout(() => {
         router.push("/auth/login");
       }, 3000);
     } catch (err: any) {
       setStatus("error");
-      setErrorMessage(err?.response?.data?.message || "Verification failed. The link may have expired or is invalid.");
-      toast.error("Verification failed");
+      setErrorMessage(err?.response?.data?.message || "Verification is not available with wallet-based auth.");
+      toast.error("Verification not available");
     } finally {
       setIsVerifying(false);
     }
@@ -67,7 +68,8 @@ const VerifyEmail = () => {
       // In a real app, you might want to get this from a state or context if available
       // For now we use the email entered/changed
       const targetEmail = email || "your email";
-      await authApi.resendVerification({ email: targetEmail });
+      // Resending verification is not supported by the wallet-based backend.
+      toast.info("Email verification is not required for wallet-based sign-in.");
       toast.success(`Verification link sent to ${targetEmail}`);
       setCooldown(COOLDOWN_SECONDS);
     } catch (err: any) {
@@ -85,7 +87,8 @@ const VerifyEmail = () => {
 
     setIsResending(true);
     try {
-      await authApi.changeEmail({ email: newEmail });
+      // Changing email is not supported by the wallet-based backend.
+      toast.info("Email changes are not supported for wallet-based accounts.");
       setEmail(newEmail);
       setIsChangingEmail(false);
       toast.success("Email updated and new verification link sent!");
