@@ -15,9 +15,9 @@ async function requestUserData<T>(
     ...init,
     headers: {
       'Content-Type': 'application/json',
-      'x-wallet-address': walletAddress,
       ...(init?.headers ?? {}),
     },
+    credentials: 'include',
   });
 
   if (!response.ok) {
