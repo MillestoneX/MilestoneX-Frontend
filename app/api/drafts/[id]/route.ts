@@ -1,22 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyJwt } from '@/lib/auth/jwt';
 
 // In-memory store for drafts (same as route.ts)
 const draftsStore = new Map<string, any[]>();
 
 // Helper to extract user ID from token
-function getUserIdFromRequest(request: NextRequest): string | null {
+async function getUserIdFromRequest(request: NextRequest): Promise<string | null> {
   try {
     const token = request.cookies.get('token')?.value;
     if (!token) return null;
 
-    const payloadSegment = token.split('.')[1];
-    if (!payloadSegment) return null;
-
-    const base64 = payloadSegment.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = atob(base64);
-    const payload = JSON.parse(jsonPayload);
-
-    return payload.sub || payload.userId || null;
+    const payload = await verifyJwt(token);
+    return payload?.sub || payload?.userId || null;
   } catch {
     return null;
   }
@@ -28,7 +23,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const userId = getUserIdFromRequest(request);
+    const userId = await getUserIdFromRequest(request);
     if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -62,7 +57,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const userId = getUserIdFromRequest(request);
+    const userId = await getUserIdFromRequest(request);
     if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
