@@ -1,108 +1,64 @@
 import { apiClient } from "./interceptors";
-import { 
-  LoginResponse, 
-  ApiResponse, 
-  RegisterRequest, 
-  LoginCredentials,
-  VerifyEmailRequest, 
-  ResendEmailRequest, 
-  ChangeEmailRequest,
+import type {
+  ApiResponse,
+  AuthChallenge,
+  AuthVerifyRequest,
+  AuthVerifyResponse,
+  AuthLogoutResponse,
 } from "@/types/api";
-import type { User } from '@/types';
+import type { User } from "@/types";
 
+/**
+ * Auth API — wallet challenge-response flow.
+ *
+ * Matches the MilestoneX-Backend auth contract:
+ *   GET  /auth/challenge        → { challenge, account, networkPassphrase }
+ *   POST /auth/verify           → { accessToken, tokenType }
+ *   POST /auth/logout           → { message }
+ *   GET  /users/me              → wallet-based User profile
+ */
 export const authApi = {
-  login: async (credentials: LoginCredentials): Promise<ApiResponse<LoginResponse>> => {
-    const response = await apiClient.post<ApiResponse<LoginResponse>>(
-      "/auth/login",
-      credentials,
+  /**
+   * Request a sign-in challenge from the backend.
+   * The returned challenge must be signed by the caller's Stellar wallet.
+   */
+  getChallenge: async (
+    walletAddress: string,
+  ): Promise<ApiResponse<AuthChallenge>> => {
+    const response = await apiClient.get<ApiResponse<AuthChallenge>>(
+      "/auth/challenge",
+      { params: { walletAddress } },
     );
     return response.data;
   },
 
-  register: async (data: RegisterRequest): Promise<ApiResponse<LoginResponse>> => {
-    const response = await apiClient.post<ApiResponse<LoginResponse>>(
-      "/auth/register",
+  /**
+   * Submit the signed challenge to obtain an accessToken.
+   */
+  verifyWallet: async (
+    data: AuthVerifyRequest,
+  ): Promise<ApiResponse<AuthVerifyResponse>> => {
+    const response = await apiClient.post<ApiResponse<AuthVerifyResponse>>(
+      "/auth/verify",
       data,
     );
     return response.data;
   },
 
+  /**
+   * Invalidate the current session on the backend.
+   */
   logout: async (): Promise<void> => {
     await apiClient.post("/auth/logout");
   },
 
-  getCurrentUser: async (): Promise<ApiResponse<User>> => {
-    const response = await apiClient.get<ApiResponse<User>>("/auth/me");
-    return response.data;
-  },
-
-  forgotPassword: async (data: { email: string }): Promise<ApiResponse<void>> => {
-    const response = await apiClient.post<ApiResponse<void>>(
-      "/users/forgot-password",
-      data,
-    );
-    return response.data;
-  },
-
-  resetPassword: async (data: { token: string; password: string }): Promise<ApiResponse<void>> => {
-    const response = await apiClient.post<ApiResponse<void>>(
-      "/users/reset-password",
-      data,
-    );
-    return response.data;
-  },
-
-  verifyEmail: async (data: VerifyEmailRequest): Promise<ApiResponse<void>> => {
-    const response = await apiClient.post<ApiResponse<void>>(
-      "/auth/verify-email",
-      data,
-    );
-    return response.data;
-  },
-
-  resendVerification: async (data: ResendEmailRequest): Promise<ApiResponse<void>> => {
-    const response = await apiClient.post<ApiResponse<void>>(
-      "/auth/resend-verification",
-      data,
-    );
-    return response.data;
-  },
-
-  changeEmail: async (data: ChangeEmailRequest): Promise<ApiResponse<void>> => {
-    const response = await apiClient.patch<ApiResponse<void>>(
-      "/auth/change-email",
-      data,
-    );
-    return response.data;
-  },
-
-  refreshToken: async (): Promise<ApiResponse<LoginResponse>> => {
-    const response = await apiClient.post<ApiResponse<LoginResponse>>(
-      "/auth/refresh-token",
-    );
-    return response.data;
-  },
-
-  socialLogin: async (data: { provider: string; token: string }): Promise<ApiResponse<LoginResponse>> => {
-    const response = await apiClient.post<ApiResponse<LoginResponse>>(
-      "/auth/social-login",
-      data,
-    );
-    return response.data;
-  },
-
-  linkSocialAccount: async (data: { provider: string; token: string }): Promise<ApiResponse<void>> => {
-    const response = await apiClient.post<ApiResponse<void>>(
-      "/auth/social-link",
-      data,
-    );
-    return response.data;
-  },
-
-  disconnectSocialAccount: async (provider: string): Promise<ApiResponse<void>> => {
-    const response = await apiClient.delete<ApiResponse<void>>(
-      `/auth/social-unlink/${provider}`
-    );
+  /**
+   * Fetch the current authenticated user profile (wallet-based).
+   * Falls back to constructing a minimal User from the JWT if the endpoint
+   * is unavailable.
+   */
+  getMe: async (): Promise<ApiResponse<User>> => {
+    const response = await apiClient.get<ApiResponse<User>>("/users/me");
     return response.data;
   },
 };

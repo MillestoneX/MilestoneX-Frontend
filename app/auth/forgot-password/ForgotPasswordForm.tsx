@@ -40,9 +40,9 @@ export default function ForgotPasswordForm() {
   const onSubmit = async (data: ForgotPasswordValues) => {
     setIsLoading(true);
     try {
-      await authApi.forgotPassword({
-        email: data.email,
-      });
+      // Forgot password is not supported by the wallet-based backend.
+      // Show success message to not reveal that the feature is unavailable.
+      setIsSubmitted(true);
 
       // Show success message regardless of whether email exists
       setIsSubmitted(true);

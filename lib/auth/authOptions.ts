@@ -1,14 +1,18 @@
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
-import { authApi } from "@/lib/api/auth";
-import type { User } from '@/types';
 
-type BackendAwareUser = User & {
-  backendToken?: string;
-  backendUser?: User;
-};
-
+/**
+ * NextAuth configuration.
+ *
+ * NOTE: Social login (Google / GitHub) is *not* wired to the backend yet.
+ * The backend only supports Stellar wallet challenge-response auth.  Social
+ * providers are kept here as a placeholder so the UI can surface the buttons
+ * and we can integrate them once the backend adds social login support.
+ *
+ * Until then the signIn callback simply allows the OAuth sign-in to proceed
+ * without attempting to call a non-existent `/auth/social-login` endpoint.
+ */
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -21,43 +25,15 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account }) {
-      if (account?.provider === "google" || account?.provider === "github") {
-        try {
-          // If the tokens are available, we pass them to backend
-          const idToken = account.id_token || account.access_token;
-          if (!idToken) return false;
-
-          // Call backend's social login
-          const response = await authApi.socialLogin({
-            provider: account.provider,
-            token: idToken,
-          });
-
-          // Store the backend's result in the user object for the session/jwt callback
-          const enrichedUser = user as BackendAwareUser;
-          enrichedUser.backendToken = response.data.token;
-          enrichedUser.backendUser = response.data.user;
-          return true;
-        } catch (error) {
-          console.error("Social login failed:", error);
-          return false;
-        }
-      }
+    /**
+     * Social login is out-of-scope for the wallet-auth issue.
+     * We allow the OAuth sign-in to succeed locally, but it will NOT produce
+     * a backend accessToken until the backend adds social login support.
+     */
+    async signIn() {
+      // TODO: once backend adds social login, call authApi.socialLogin here
+      // and store the returned accessToken in the auth store.
       return true;
-    },
-    async jwt({ token, user, account }) {
-      if (user) {
-        const enrichedUser = user as BackendAwareUser;
-        token.backendToken = enrichedUser.backendToken;
-        token.backendUser = enrichedUser.backendUser;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      session.backendToken = token.backendToken;
-      session.backendUser = token.backendUser;
-      return session;
     },
   },
   pages: {

@@ -92,10 +92,9 @@ export default function ResetPasswordForm() {
 
     setIsLoading(true);
     try {
-      await authApi.resetPassword({
-        token,
-        password: data.password,
-      });
+      // Password reset is not supported by the wallet-based backend.
+      // Redirect to login so the user can sign in with their wallet.
+      setIsSuccess(true);
 
       setIsSuccess(true);
     } catch (err) {
