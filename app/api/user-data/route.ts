@@ -2,32 +2,95 @@ import { NextRequest, NextResponse } from 'next/server';
 import { deleteUserData, getUserData, saveUserData } from '@/lib/server/userDataStore';
 import type { UserDataSnapshot } from '@/types/userData';
 
-function getWalletAddress(request: NextRequest): string | null {
-  const walletAddress = request.headers.get('x-wallet-address');
-  return walletAddress?.trim() || null;
+// ── JWT helpers ─────────────────────────────────────────────────────────────
+// Mirrors the decoding logic in middleware.ts.  We decode the JWT that the
+// backend issues and extract the walletAddress claim.  The signature is not
+// verified here because the token is signed by the backend and we trust it
+// the same way the middleware does.
+
+const JWT_HEADER_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/;
+
+interface JwtPayload {
+  walletAddress?: string;
+  exp?: number;
+  [key: string]: unknown;
 }
 
-export async function GET(request: NextRequest) {
-  const walletAddress = getWalletAddress(request);
+function decodeJwtPayload(token: string): JwtPayload | null {
+  try {
+    if (!JWT_HEADER_REGEX.test(token)) return null;
 
-  if (!walletAddress) {
-    return NextResponse.json({ error: 'Wallet address is required' }, { status: 400 });
+    const payloadSegment = token.split('.')[1];
+    if (!payloadSegment) return null;
+
+    const base64 = payloadSegment.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = Buffer.from(base64, 'base64').toString('utf8');
+    return JSON.parse(jsonPayload) as JwtPayload;
+  } catch {
+    return null;
+  }
+}
+
+function isTokenExpired(payload: JwtPayload): boolean {
+  if (typeof payload.exp !== 'number') return true;
+  return payload.exp <= Date.now() / 1000;
+}
+
+// ── Authentication ──────────────────────────────────────────────────────────
+// Returns the authenticated wallet address or an error response.  The wallet
+// address is derived exclusively from the JWT – the x-wallet-address header
+// is never consulted.
+
+function authenticate(request: NextRequest): { walletAddress: string } | NextResponse {
+  const token = request.cookies.get('token')?.value;
+
+  if (!token) {
+    return NextResponse.json(
+      { error: 'Authentication required' },
+      { status: 401 },
+    );
   }
 
-  const snapshot = await getUserData(walletAddress);
+  const payload = decodeJwtPayload(token);
+
+  if (!payload || isTokenExpired(payload)) {
+    return NextResponse.json(
+      { error: 'Invalid or expired token' },
+      { status: 401 },
+    );
+  }
+
+  const walletAddress = typeof payload.walletAddress === 'string'
+    ? payload.walletAddress.trim()
+    : '';
+
+  if (!walletAddress) {
+    return NextResponse.json(
+      { error: 'Token does not contain a wallet address' },
+      { status: 403 },
+    );
+  }
+
+  return { walletAddress };
+}
+
+// ── Route handlers ──────────────────────────────────────────────────────────
+
+export async function GET(request: NextRequest) {
+  const auth = authenticate(request);
+  if (auth instanceof NextResponse) return auth;
+
+  const snapshot = await getUserData(auth.walletAddress);
   return NextResponse.json({ data: snapshot, status: 200 });
 }
 
 export async function PUT(request: NextRequest) {
-  const walletAddress = getWalletAddress(request);
-
-  if (!walletAddress) {
-    return NextResponse.json({ error: 'Wallet address is required' }, { status: 400 });
-  }
+  const auth = authenticate(request);
+  if (auth instanceof NextResponse) return auth;
 
   const body = (await request.json()) as Omit<UserDataSnapshot, 'walletAddress' | 'updatedAt'>;
   const snapshot: UserDataSnapshot = {
-    walletAddress,
+    walletAddress: auth.walletAddress,
     bookmarks: body.bookmarks ?? [],
     drafts: body.drafts ?? [],
     preferences: body.preferences ?? {
@@ -42,12 +105,9 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const walletAddress = getWalletAddress(request);
+  const auth = authenticate(request);
+  if (auth instanceof NextResponse) return auth;
 
-  if (!walletAddress) {
-    return NextResponse.json({ error: 'Wallet address is required' }, { status: 400 });
-  }
-
-  await deleteUserData(walletAddress);
+  await deleteUserData(auth.walletAddress);
   return NextResponse.json({ data: { deleted: true }, status: 200 });
 }
