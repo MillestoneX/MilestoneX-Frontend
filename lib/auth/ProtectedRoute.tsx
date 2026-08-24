@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import { authApi } from "@/lib/api/auth";
 import type { User } from "@/types";
 
 // Role type for access control
@@ -16,25 +17,6 @@ interface ProtectedRouteProps {
   fallbackPath?: string;
   loadingComponent?: React.ReactNode;
 }
-
-// JWT token validation utility
-const isTokenValid = (token: string): boolean => {
-  try {
-    // Decode JWT payload (without verification for simplicity)
-    const payloadSegment = token.split(".")[1];
-    if (!payloadSegment) {
-      return false;
-    }
-    const payload = JSON.parse(atob(payloadSegment));
-    const currentTime = Date.now() / 1000;
-
-    // Check if token is expired
-    return payload.exp > currentTime;
-  } catch (error) {
-    console.error("Invalid token format:", error);
-    return false;
-  }
-};
 
 // Check if user has required role
 const hasRequiredRole = (
@@ -75,7 +57,7 @@ export function ProtectedRoute({
 }: ProtectedRouteProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, token, isAuthenticated, isLoading } = useAuthStore();
+  const { user, isAuthenticated, isLoading } = useAuthStore();
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
 
@@ -88,12 +70,8 @@ export function ProtectedRoute({
         return;
       }
 
-      // Check if user is authenticated and token is valid
-      const isTokenValidValue = token ? isTokenValid(token) : false;
-      const isUserAuthenticated = isAuthenticated && isTokenValidValue;
-
-      if (!isUserAuthenticated) {
-        // Store intended destination and redirect to login
+      // Check if user is marked as authenticated in store
+      if (!isAuthenticated) {
         if (
           typeof window !== "undefined" &&
           pathname !== fallbackPath &&
@@ -107,11 +85,37 @@ export function ProtectedRoute({
         return;
       }
 
+      // Verify the session with the backend instead of trusting
+      // a locally decoded JWT payload (which would be unverified).
+      try {
+        await authApi.getCurrentUser();
+      } catch (error: any) {
+        const status = error?.response?.status;
+        if (status === 401 || status === 403) {
+          useAuthStore.getState().logout();
+          if (
+            typeof window !== "undefined" &&
+            pathname !== fallbackPath &&
+            pathname !== "/auth/login"
+          ) {
+            sessionStorage.setItem("intended-destination", pathname);
+          }
+          router.replace(fallbackPath);
+          setIsAuthorized(false);
+          setIsCheckingAuth(false);
+          return;
+        }
+        // Network/server error: keep current auth state and render.
+        // Server-side enforcement still protects resources.
+        setIsAuthorized(true);
+        setIsCheckingAuth(false);
+        return;
+      }
+
       // Check role-based access
       const hasRoleAccess = hasRequiredRole(user, requiredRole, allowedRoles);
 
       if (!hasRoleAccess) {
-        // Redirect to unauthorized page or dashboard
         router.replace("/unauthorized");
         setIsAuthorized(false);
         setIsCheckingAuth(false);
@@ -134,7 +138,6 @@ export function ProtectedRoute({
     checkAuthentication();
   }, [
     isAuthenticated,
-    token,
     user,
     isLoading,
     requiredRole,

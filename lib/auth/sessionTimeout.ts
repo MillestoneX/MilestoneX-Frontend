@@ -24,6 +24,10 @@ export interface SessionTimeoutState {
 }
 
 // JWT token utilities
+// NOTE: These helpers only decode the payload for UX purposes (warning timers,
+// auto-refresh triggers). They do NOT verify the signature and must not be used
+// for security decisions. Signature verification is handled server-side by
+// `verifyJwt` in `lib/auth/jwt.ts`.
 const getTokenExpirationTime = (token: string): number | null => {
   try {
     const payloadSegment = token.split(".")[1];
